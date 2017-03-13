@@ -20,7 +20,7 @@ namespace MovieServerCleaner.Cleanups
                 var extension = file.Extension.ToLower();
                 if (extension != ".srt") continue;
                 if (Settings.GetInstance().AllowedSubtitles.Contains(name)) continue;
-                if (name.Length >= 8) continue;
+                if ((name.Length >= 8) && (name.Contains("DANISH") || name.Contains("DANSK") || name.Contains("DA") || name.Contains("DK"))) continue;
                 ConsoleEx.WriteLine($"Deleting subtitle '{file.Directory?.Parent?.Name}\\{file.Name}'", ConsoleColor.DarkRed);
                 File.Delete(file.FullName);
             }
