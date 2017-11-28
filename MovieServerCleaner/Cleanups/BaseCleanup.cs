@@ -51,7 +51,7 @@ namespace MovieServerCleaner.Cleanups
                 case CleanupType.RenamingFiles:
                     outputType = "Renaming all files in directory";
                     break;
-                case CleanupType.MoveNfoFiles:
+                case CleanupType.CopyfoFiles:
                     outputType = "Moving NFO files";
                     break;
                 default:

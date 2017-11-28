@@ -49,7 +49,7 @@
     <Compile Include="Cleanups\CleanupDeleteSamples.cs" />
     <Compile Include="Cleanups\CleanUpDeleteSubtitles.cs" />
     <Compile Include="Cleanups\CleanupFixFolderNames.cs" />
-    <Compile Include="Cleanups\CleanUpMoveNfoFiles.cs" />
+    <Compile Include="Cleanups\CleanupCopyNfoFiles.cs" />
     <Compile Include="Cleanups\CleanupMoveSubtitles.cs" />
     <Compile Include="Cleanups\CleanupRenamingFiles.cs" />
     <Compile Include="Cleanups\CleanupType.cs" />

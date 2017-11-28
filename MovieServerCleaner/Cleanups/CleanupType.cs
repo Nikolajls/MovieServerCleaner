@@ -8,6 +8,6 @@
         DeleteSamples,
         MoveSubtitles,
         RenamingFiles,
-        MoveNfoFiles
+        CopyfoFiles
     }
 }

@@ -22,13 +22,29 @@ namespace MovieServerCleaner.Cleanups
                 foreach (var fileName in d)
                 {
                     var newPath = Path.Combine(moviePath, movieName + fileName.Extension);
-                    if (fileName.FullName == newPath) continue;
-                    Console.WriteLine($"Renaming {fileName.FullName}-{newPath}");
-                    File.Move(fileName.FullName, newPath);
+                    if (fileName.FullName.ToLower() == newPath.ToLower()) continue;
+                    var safeFilename = GetSafeName(new FileInfo(newPath), 0);
+                    Console.WriteLine($"Renaming {fileName.FullName}-{safeFilename}");
+
+                    File.Move(fileName.FullName, safeFilename);
                 }
                 ;
             }
             return true;
+        }
+
+        public static string GetSafeName(FileInfo nfo, int tryCount)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(nfo.Name);
+            var directoryName = nfo.Directory?.FullName;
+            var dstName = fileName;
+            if (tryCount > 0)
+                dstName = dstName + $" ({tryCount})";
+            dstName = dstName + nfo.Extension;
+            var newNfoPath = Path.Combine(directoryName, dstName);
+            if (!File.Exists(newNfoPath)) return newNfoPath;
+            tryCount++;
+            return GetSafeName(nfo, tryCount);
         }
     }
 }

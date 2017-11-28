@@ -15,7 +15,7 @@ namespace MovieServerCleaner
             if (!new CleanupDeleteSamples().Run()) return;
             if (!new CleanupMoveSubtitles().Run()) return;
             if (!new CleanupRenamingFiles().Run()) return;
-            if (!new CleanupMoveNfoFiles().Run()) return;
+            if (!new CleanupCopyNfoFiles().Run()) return;
             ConsoleEx.WriteLine("Program finished cleanup - idling now...", ConsoleColor.Red);
             Console.ReadLine();
         }

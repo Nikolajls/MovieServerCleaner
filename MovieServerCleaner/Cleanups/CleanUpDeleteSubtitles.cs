@@ -16,11 +16,17 @@ namespace MovieServerCleaner.Cleanups
             var casted = enumerable.OfType<FileInfo>().Where(x => x.Directory != null).ToList();
             foreach (var file in casted)
             {
+                var DirectoryName = file.Directory.Name.ToUpper();
+                var filename = file.Name.ToUpper().Replace(file.Extension.ToUpper(), "");
                 var name = file.Name.ToUpper();
                 var extension = file.Extension.ToLower();
                 if (extension != ".srt") continue;
+                if (DirectoryName == filename) continue;
                 if (Settings.GetInstance().AllowedSubtitles.Contains(name)) continue;
-                if ((name.Length >= 8) && (name.Contains("DANISH") || name.Contains("DANSK") || name.Contains("DA") || name.Contains("DK"))) continue;
+                var nameContainsDK = name.Contains("DANISH") || name.Contains("DANSK") || name.Contains(".DA.") || name.Contains(".DK.");
+                if (name.Length >= 8 && nameContainsDK) continue;
+
+
                 ConsoleEx.WriteLine($"Deleting subtitle '{file.Directory?.Parent?.Name}\\{file.Name}'", ConsoleColor.DarkRed);
                 File.Delete(file.FullName);
             }

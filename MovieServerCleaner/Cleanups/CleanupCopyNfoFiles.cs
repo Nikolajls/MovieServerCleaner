@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace MovieServerCleaner.Cleanups
 {
-    public class CleanupMoveNfoFiles : BaseCleanup
+    public class CleanupCopyNfoFiles : BaseCleanup
     {
-        public CleanupMoveNfoFiles() : base(CleanupType.MoveNfoFiles)
+        public CleanupCopyNfoFiles() : base(CleanupType.CopyfoFiles)
         {
         }
 
@@ -18,7 +18,7 @@ namespace MovieServerCleaner.Cleanups
             {
                 var newNfoPath = GetSafeNfoName(nfo, 0);
                 ConsoleEx.WriteLine($"Moving '{nfo.Name}' to '{newNfoPath.Replace(Settings.GetInstance().PathWorkingFolder, "")}'", ConsoleColor.DarkRed);
-                File.Move(nfo.FullName, newNfoPath);
+                File.Copy(nfo.FullName, newNfoPath);
             }
             return true;
         }
