@@ -1,0 +1,21 @@
+{
+  "AllowedSubtitles": [ "DA.SRT", "DK.SRT" ],
+  "SubDirNames": [ "sub", "subs", "subtitles", "undertekster" ],
+  "Folders": [
+    {
+      "PathNfoFolder": "",
+      "PathWorkingFolder": "",
+      "Title": "Test1"
+    },
+    {
+      "PathNfoFolder": "",
+      "PathWorkingFolder": "",
+      "Title": "Test2"
+    },
+    {
+      "PathNfoFolder": "",
+      "PathWorkingFolder": "",
+      "Title": "Test3"
+    }
+  ]
+}

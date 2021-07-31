@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MovieServerCleaner.Models;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -7,13 +8,17 @@ namespace MovieServerCleaner.Cleanups
 {
     public class CleanupRenameFolders : BaseCleanup
     {
-        public CleanupRenameFolders() : base(CleanupType.RenameFolders)
+        private readonly FolderSettings folderSettings;
+
+        public override string OutputType => "Renaming moviefolders";
+        public CleanupRenameFolders(FolderSettings folderSettings) : base(CleanupType.RenameFolders)
         {
+            this.folderSettings = folderSettings;
         }
 
         public override bool Clean()
         {
-            var enumerable = new FileSystemEnumerable(new DirectoryInfo(Settings.GetInstance().PathMovieFlyttes), "*.*", SearchOption.AllDirectories, 0).ToList();
+            var enumerable = new FileSystemEnumerable(new DirectoryInfo(folderSettings.PathWorkingFolder), "*.*", SearchOption.AllDirectories, 0).ToList();
             var movieDirs = enumerable.OfType<DirectoryInfo>().ToList();
             var Reg = new Regex(@"^(.+?)(\d{4})(.+)$", RegexOptions.IgnoreCase);
             foreach (var moviedir in movieDirs)
@@ -27,7 +32,7 @@ namespace MovieServerCleaner.Cleanups
                 }
                 var newName = matches[1].Replace(".", " ");
                 Console.WriteLine($"Renaming '{dirname}' to '{newName}'");
-                var newPath = Path.Combine(Settings.GetInstance().PathMovieFlyttes, newName);
+                var newPath = Path.Combine(folderSettings.PathWorkingFolder, newName);
                 moviedir.MoveTo(newPath);
             }
             return true;

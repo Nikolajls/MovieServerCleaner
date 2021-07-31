@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MovieServerCleaner.Models;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -6,13 +7,17 @@ namespace MovieServerCleaner.Cleanups
 {
     public class CleanupDeleteSamples : BaseCleanup
     {
-        public CleanupDeleteSamples() : base(CleanupType.DeleteSamples)
+        private readonly FolderSettings folderSettings;
+
+        public override string OutputType => "Deleting all samples";
+        public CleanupDeleteSamples(FolderSettings folderSettings) : base(CleanupType.DeleteSamples)
         {
+            this.folderSettings = folderSettings;
         }
 
         public override bool Clean()
         {
-            var enumerable = new FileSystemEnumerable(new DirectoryInfo(Settings.GetInstance().PathMovieFlyttes), "*.*", SearchOption.AllDirectories, 2).ToList();
+            var enumerable = new FileSystemEnumerable(new DirectoryInfo(folderSettings.PathWorkingFolder), "*.*", SearchOption.AllDirectories, 2).ToList();
             var casted = enumerable.OfType<FileInfo>().Where(fi => fi.Directory != null).ToList();
             foreach (var file in casted)
             {

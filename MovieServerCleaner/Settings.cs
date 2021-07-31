@@ -1,6 +1,9 @@
-﻿using System;
+﻿using MovieServerCleaner.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 
 namespace MovieServerCleaner
@@ -9,44 +12,34 @@ namespace MovieServerCleaner
     {
         public Settings()
         {
-            var temporayConfigRead = ConfigurationManager.AppSettings["AllowedSubtitles"];
-            if (temporayConfigRead != null) AllowedSubtitles = temporayConfigRead.Split('|').ToList();
-
-            temporayConfigRead = ConfigurationManager.AppSettings["SubDirNames"];
-            if (temporayConfigRead != null) SubDirNames = temporayConfigRead.Split('|').ToList();
-
-            temporayConfigRead = ConfigurationManager.AppSettings["PathWorkingFolderMovie"];
-            if (temporayConfigRead != null) PathMovieFlyttes = temporayConfigRead;
-
-            temporayConfigRead = ConfigurationManager.AppSettings["PathNfo"];
-            if (temporayConfigRead != null) PathNfoFolder = temporayConfigRead;
-
-            temporayConfigRead = ConfigurationManager.AppSettings["PathFlyttes"];
-            if (temporayConfigRead != null) PathWorkingFolder = temporayConfigRead;
+            var file = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
+            Console.WriteLine(file);
+            if (File.Exists(file))
+            {
+                Console.WriteLine("Loading settings from json");
+                var json = File.ReadAllText(file);
+                LocalSettings = JsonConvert.DeserializeObject<ApplicationSettings>(json);
+            }
+            else
+            {
+                LocalSettings = new ApplicationSettings();
+            }
         }
 
         private static Settings LocalInstance { get; set; }
+        public static Settings Instance => LocalInstance ??= new Settings();
+        private ApplicationSettings LocalSettings { get; }
 
-        public List<string> AllowedSubtitles { get; } = new List<string> {"DA.SRT", "DK.SRT"};
-        public List<string> SubDirNames { get; } = new List<string> {"sub", "subs", "subtitles", "undertekster"};
-        public string PathMovieFlyttes { get; } = @"\\server\download\Flyttes\Film\";
-        public string PathNfoFolder { get; } = @"\\server\download\Flyttes\Extra\NFOs\";
-        public string PathWorkingFolder { get; } = @"\\server\download\Flyttes\";
-
-        public static Settings GetInstance()
-        {
-            LocalInstance = LocalInstance ?? new Settings();
-            return LocalInstance;
-        }
-
+        public List<string> AllowedSubtitles => LocalSettings.AllowedSubtitles;
+        public List<string> SubDirNames => LocalSettings.SubDirNames;
+        public List<FolderSettings> Folders => LocalSettings.Folders;
+    
+        //public string
         public void WriteSettings()
         {
-            ConsoleEx.WriteLine("Dumping settings", ConsoleColor.DarkYellow);
-            ConsoleEx.WriteLine($"{string.Join(";", AllowedSubtitles)}", ConsoleColor.DarkYellow);
-            ConsoleEx.WriteLine($"{string.Join(";", SubDirNames)}", ConsoleColor.DarkYellow);
-            ConsoleEx.WriteLine($"{PathMovieFlyttes}", ConsoleColor.DarkYellow);
-            ConsoleEx.WriteLine($"{PathNfoFolder}", ConsoleColor.DarkYellow);
-            ConsoleEx.WriteLine($"{PathWorkingFolder}", ConsoleColor.DarkYellow);
+            //ConsoleEx.WriteLine("Dumping settings", ConsoleColor.DarkYellow);
+            //ConsoleEx.WriteLine($"{string.Join(";", AllowedSubtitles)}", ConsoleColor.DarkYellow);
+            //ConsoleEx.WriteLine($"{string.Join(";", SubDirNames)}", ConsoleColor.DarkYellow);
         }
     }
 }

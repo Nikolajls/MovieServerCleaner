@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MovieServerCleaner.Models;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -6,19 +7,23 @@ namespace MovieServerCleaner.Cleanups
 {
     public class CleanupMoveSubtitles : BaseCleanup
     {
-        public CleanupMoveSubtitles() : base(CleanupType.MoveSubtitles)
+        private readonly FolderSettings folderSettings;
+
+        public override string OutputType => "Moving remaining subtitles";
+        public CleanupMoveSubtitles(FolderSettings folderSettings) : base(CleanupType.MoveSubtitles)
         {
+            this.folderSettings = folderSettings;
         }
 
         public override bool Clean()
         {
-            var enumerable = new FileSystemEnumerable(new DirectoryInfo(Settings.GetInstance().PathMovieFlyttes), "*.*", SearchOption.AllDirectories, 2).ToList();
+            var enumerable = new FileSystemEnumerable(new DirectoryInfo(folderSettings.PathWorkingFolder), "*.*", SearchOption.AllDirectories, 2).ToList();
             var dirs = enumerable.OfType<DirectoryInfo>().ToList();
             var casted = enumerable.OfType<FileInfo>().ToList();
             foreach (var dir in dirs)
             {
                 var dirNameLower = dir.Name.ToLower();
-                if (!Settings.GetInstance().SubDirNames.Contains(dirNameLower)) continue;
+                if (!Settings.Instance.SubDirNames.Contains(dirNameLower)) continue;
                 var remainingSubtitles = casted.Where(x => x.DirectoryName == dir.FullName).ToList();
                 var parentDir = dir.Parent;
                 if (parentDir == null) continue;
@@ -36,7 +41,7 @@ namespace MovieServerCleaner.Cleanups
 
         private string RemoveRootMovieFolder(string s)
         {
-            return s.Replace(Settings.GetInstance().PathMovieFlyttes, "");
+            return s.Replace(folderSettings.PathWorkingFolder, "");
         }
     }
 }
